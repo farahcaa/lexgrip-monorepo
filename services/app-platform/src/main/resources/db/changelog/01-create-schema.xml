@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!-- Enable UUID generation -->
+    <changeSet id="0" author="Chris Farah">
+        <sql>CREATE
+        EXTENSION IF NOT EXISTS "uuid-ossp";</sql>
+    </changeSet>
+
+    <changeSet id="create-decks-table" author="Chris Farah">
+        <createTable tableName="decks">
+            <column name="id" type="UUID" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="user_id" type="UUID"/>
+
+            <column name="name" type="VARCHAR(120)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="color" type="VARCHAR(100))"  />
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-cards-table" author="Chris Farah">
+        <createTable tableName="cards">
+            <column name="id" type="UUID" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="deck_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="front_text" type="VARCHAR(500)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="back_text" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="example_text" type="TEXT"/>
+
+            <column name="sort_order" type="INT" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="cards"
+                baseColumnNames="user_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                constraintName="fk_cards_user"/>
+
+        <addForeignKeyConstraint
+                baseTableName="cards"
+                baseColumnNames="deck_id"
+                referencedTableName="decks"
+                referencedColumnNames="id"
+                constraintName="fk_cards_deck"/>
+
+        <createIndex tableName="cards" indexName="idx_cards_user">
+            <column name="user_id"/>
+        </createIndex>
+
+        <createIndex tableName="cards" indexName="idx_cards_deck">
+            <column name="deck_id"/>
+        </createIndex>
+
+        <createIndex tableName="cards" indexName="idx_cards_user_deck">
+            <column name="user_id"/>
+            <column name="deck_id"/>
+        </createIndex>
+
+        <createIndex tableName="cards" indexName="idx_cards_user_sort">
+            <column name="user_id"/>
+            <column name="sort_order"/>
+        </createIndex>
+    </changeSet>
+
+
+<changeSet id="create-users table" author="Chris Farah" >
+    <createTable tableName="users">
+        <column name="id" type="UUID" defaultValueComputed="uuid_generate_v4()">
+            <constraints primaryKey="true" nullable="false" unique="true"/>
+        </column>
+
+        <column name="username" type="VARCHAR(64)">
+            <constraints nullable="false" unique="true" uniqueConstraintName="uq_users_username"/>
+        </column>
+
+        <column name="email" type="VARCHAR(320)">
+            <constraints nullable="false" unique="true" uniqueConstraintName="uq_users_email"/>
+        </column>
+
+        <column name="name" type="VARCHAR(255)"/>
+
+        <column name="marketing_consent" type="BOOLEAN" defaultValue="false" >
+            <constraints nullable="false"/>
+        </column>
+
+        <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="NOW()">
+            <constraints nullable="false"/>
+        </column>
+
+        <column name="updated_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="NOW()">
+            <constraints nullable="false"/>
+        </column>
+    </createTable>
+</changeSet>
+
+    <changeSet id="create-feeback-table" author="Chris Farah" >
+    <createTable tableName="feedback">
+        <column name="id" type="UUID">
+            <constraints primaryKey="true" nullable="false"/>
+        </column>
+
+        <column name="user_id" type="UUID"/>
+
+        <column name="type" type="VARCHAR(20)">
+            <constraints nullable="false"/>
+        </column>
+
+        <column name="message" type="TEXT">
+            <constraints nullable="false"/>
+        </column>
+
+        <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="NOW()">
+            <constraints nullable="false"/>
+        </column>
+
+        <column name="updated_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="NOW()">
+            <constraints nullable="false" />
+        </column>
+    </createTable>
+    </changeSet>
+</databaseChangeLog>

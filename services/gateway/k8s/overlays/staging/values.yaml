@@ -1,0 +1,5 @@
+fullnameOverride: gateway
+
+ports:
+  websecure:
+    port: 443

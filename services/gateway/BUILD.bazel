@@ -1,0 +1,51 @@
+load("@rules_helm//helm:defs.bzl", "helm_import", "helm_template")
+load("//build_defs/utils/environment:select_env.bzl", "select_env")
+load("//build_defs/utils/tgz:extract_tgz.bzl", "extract_tgz")
+
+package(default_visibility = ["//visibility:public"])
+
+extract_tgz(
+    name = "crds",
+    src = "@traefik_chart//file",
+    subdir = "traefik/crds",
+)
+
+# Create chart
+helm_import(
+    name = "chart",
+    chart = "@traefik_chart//file:file",
+)
+
+base_env = "k8s/base/values.yaml"
+
+# Define values.yaml
+selected_env = select_env(
+    default = [base_env],
+    dev = [
+        "k8s/overlays/dev/values.yaml",
+    ],
+    prod = [
+        "k8s/overlays/prod/values.yaml",
+    ],
+    staging = [
+        "k8s/overlays/staging/values.yaml",
+    ],
+)
+
+# Render template
+helm_template(
+    name = "template",
+    out = "traefik-manifests.yaml",
+    chart = ":chart",
+    values = [
+        base_env,
+    ] + selected_env,
+)
+
+filegroup(
+    name = "manifests",
+    srcs = [
+        "traefik-manifests.yaml",
+        ":crds",
+    ],
+)

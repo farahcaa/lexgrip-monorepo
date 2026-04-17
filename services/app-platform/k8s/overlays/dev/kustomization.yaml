@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+  - secret.yaml
+
+configMapGenerator:
+  - name: env
+    behavior: merge
+    envs:
+      - app-platform.env
+
+generatorOptions:
+  disableNameSuffixHash: true

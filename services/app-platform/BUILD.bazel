@@ -1,0 +1,126 @@
+load("@protobuf//bazel:proto_library.bzl", "proto_library")
+load("@rules_java//java:defs.bzl", "java_import", "java_library", "java_plugin")
+load("@rules_oci//oci:defs.bzl", "oci_image", "oci_image_index", "oci_load", "oci_push")
+load("@rules_pkg//:pkg.bzl", "pkg_tar")
+load("@rules_proto_grpc_java//:defs.bzl", "java_grpc_library", "java_proto_library")
+load("@rules_spring//springboot:springboot.bzl", "springboot")
+load("//build_defs/k8s:service_manifest.bzl", "k8s_service_manifest")
+load("//build_defs/spring/dependencies:dependency_groups.bzl", "GRPC_STARTER_DEPS", "MICROSERVICE_WEB_DEPS")
+
+package(default_visibility = ["//visibility:public"])
+
+springboot_deps = [
+    "//build_defs/spring/import_bundles:springboot_required_deps",
+    "//libs/common-api:common-api",
+    "//libs/common-webservice:common-webservice",
+] + MICROSERVICE_WEB_DEPS + GRPC_STARTER_DEPS
+
+java_plugin(
+    name = "mapstruct_plugin",
+    processor_class = "org.mapstruct.ap.MappingProcessor",
+    deps = ["@maven//:org_mapstruct_mapstruct_processor"],
+)
+
+java_library(
+    name = "app-platform",
+    srcs = glob(["src/main/java/com/lexgrip/app/platform/service/**/*.java"]),
+    plugins = [
+        ":mapstruct_plugin",
+    ],
+    resources = glob([
+        "src/main/resources/**",
+    ]),
+    deps = springboot_deps + [
+        # JPA
+        "@maven//:jakarta_persistence_jakarta_persistence_api",
+        "@maven//:org_springframework_boot_spring_boot_starter_data_jpa",
+        "@maven//:org_springframework_data_spring_data_jpa",
+        "@maven//:org_springframework_data_spring_data_commons",
+
+        # Hibernate
+        "@maven//:org_hibernate_orm_hibernate_core",
+        "@maven//:org_hibernate_validator_hibernate_validator",
+
+        # Postgres + Liquibase
+        "@maven//:org_postgresql_postgresql",
+        "@maven//:org_liquibase_liquibase_core",
+    ],
+)
+
+springboot(
+    name = "app-platform-spring",
+    boot_app_class = "com.farakov.vrelte.app.platform.service.VrelteAppPlatformApplication",
+    boot_launcher_class = "org.springframework.boot.loader.launch.JarLauncher",
+    java_library = ":app-platform",
+)
+
+genrule(
+    name = "start-script",
+    srcs = ["scripts/start.sh"],
+    outs = ["start.sh"],
+    cmd = "cp $< $@",
+)
+
+pkg_tar(
+    name = "app-platform-spring-tar",
+    srcs = [
+        ":app-platform-spring",
+        ":start-script",
+    ],
+    mode = "0755",
+    package_dir = "/app",
+)
+
+oci_image(
+    name = "app-platform-image_arm64",
+    base = "@java-base_linux_arm64_v8",
+    entrypoint = ["/app/start.sh"],
+    tars = [":app-platform-spring-tar"],
+)
+
+oci_image(
+    name = "app-platform-image_amd64",
+    base = "@java-base_linux_amd64",
+    entrypoint = ["/app/app-platform-spring"],
+    tars = [":app-platform-spring-tar"],
+)
+
+oci_image_index(
+    name = "app-platform-image",
+    images = [
+        ":app-platform-image_arm64",
+        ":app-platform-image_amd64",
+    ],
+)
+
+oci_load(
+    name = "app-platform-tarball-oci",
+    format = "oci",
+    image = ":app-platform-image",
+    repo_tags = ["farakov-engineering/app-platform:latest"],
+)
+
+filegroup(
+    name = "app-platform-tarball",
+    srcs = [":app-platform-tarball-oci"],
+    output_group = "tarball",
+)
+
+## DEFINE REMOTE PUSHING LOGIC
+oci_push(
+    name = "app-platform-push",
+    image = ":app-platform-image",
+    repository = "ghcr.io/farakov-engineering/vrelte/app-platform",
+)
+
+## DEFINE K8S PIPELINE MANIFESTS
+k8s_service_manifest(
+    name = "app-platform-manifests",
+)
+
+filegroup(
+    name = "manifests",
+    srcs = [
+        ":app-platform-manifests",
+    ],
+)

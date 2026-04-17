@@ -1,0 +1,23 @@
+load(":flags.bzl", "pipeline")
+
+package(default_visibility = ["//visibility:public"])
+
+pipeline(
+    name = "pipeline",
+    build_setting_default = "dev",
+)
+
+config_setting(
+    name = "dev",
+    flag_values = {":pipeline": "dev"},
+)
+
+config_setting(
+    name = "staging",
+    flag_values = {":pipeline": "staging"},
+)
+
+config_setting(
+    name = "prod",
+    flag_values = {":pipeline": "prod"},
+)

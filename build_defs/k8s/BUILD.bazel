@@ -1,0 +1,11 @@
+filegroup(
+    name = "extract_crds_sh",
+    srcs = ["extract_crds.sh"],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "split_crds_sh",
+    srcs = ["split_crds.sh"],
+    visibility = ["//visibility:public"],
+)

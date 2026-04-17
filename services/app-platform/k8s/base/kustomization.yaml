@@ -1,0 +1,24 @@
+resources:
+  - deployment.yaml
+  - service.yaml
+  - ./postgres
+  - ingressroute.yaml
+
+patches:
+  - path: env-patch.yaml
+
+configMapGenerator:
+  - name: env
+    envs:
+      - app-platform.env
+  - name: db-env
+    envs:
+      - db.env
+
+namePrefix: app-platform-
+
+labels:
+  - pairs:
+      app: app-platform
+    includeSelectors: true
+    includeTemplates: true

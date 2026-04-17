@@ -1,0 +1,52 @@
+load("//build_defs/k8s:kubectl.bzl", "kubectl_apply_all")
+load("//build_defs/k8s:minikube.bzl", "minikube_load_all")
+load("//build_defs/utils/environment:select_env.bzl", "select_env")
+
+COMMON_MANIFESTS = [
+    "//services/gateway:manifests",
+    "//services/keycloak:manifests",
+    "//services/app-platform:manifests",
+]
+
+# Dev specific manifests
+DEV_MANIFESTS = [
+]
+
+# Staging specific manifests
+STAGING_MANIFESTS = [
+    "//services/external-secrets:manifests",
+]
+
+# Prod specific manifests
+PROD_MANIFESTS = [
+    "//services/external-secrets:manifests",
+]
+
+filegroup(
+    name = "manifests",
+    srcs = COMMON_MANIFESTS + select_env(
+        default = [],
+        dev = DEV_MANIFESTS,
+        prod = PROD_MANIFESTS,
+        staging = STAGING_MANIFESTS,
+    ),
+)
+
+# Conditional Execution for dev
+select_env(
+    dev = [
+        # Load all images at once into Minikube
+        minikube_load_all(
+            name = "load-all-images",
+            images = [
+                "//services/app-platform:app-platform-tarball",
+            ],
+        ),
+
+        # Apply all manifests in DEV environment
+        kubectl_apply_all(
+            name = "apply-all",
+            srcs = [":manifests"],
+        ),
+    ],
+)

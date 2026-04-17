@@ -1,0 +1,14 @@
+load("//build_defs/k8s:service_manifest.bzl", "k8s_service_manifest")
+
+package(default_visibility = ["//visibility:public"])
+
+k8s_service_manifest(
+    name = "keycloak_manifests",
+)
+
+filegroup(
+    name = "manifests",
+    srcs = [
+        ":keycloak_manifests",
+    ],
+)

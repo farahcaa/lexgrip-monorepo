@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      component: keycloak
+  template:
+    metadata:
+      labels:
+        component: keycloak
+    spec:
+      initContainers:
+        - name: wait-for-postgres
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - |
+              echo "Waiting for Postgres..."
+              while ! nc -z keycloak-postgres-service 5432; do
+                echo "Postgres is not ready yet..."
+                sleep 2
+              done
+              echo "Postgres is ready!"
+      containers:
+        - name: keycloak
+          image: quay.io/keycloak/keycloak:26.5.6
+          imagePullPolicy: IfNotPresent
+          command: [ "/bin/bash", "/scripts/start-keycloak.sh" ]
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /realms/master
+              port: 8080

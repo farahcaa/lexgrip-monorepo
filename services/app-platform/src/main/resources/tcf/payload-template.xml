@@ -1,0 +1,8 @@
+<system_instructions>
+    <soul>{SOUL_CONTENT}</soul>
+    <constraints>{CONSTRAINTS_CONTENT}</constraints>
+</system_instructions>
+
+<task_logic>
+{TASK_CONTENT}
+</task_logic>

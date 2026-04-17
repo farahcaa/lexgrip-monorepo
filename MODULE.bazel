@@ -1,0 +1,45 @@
+module(
+    name = "lexgrip-application",
+    version = "0.0.0",
+)
+
+bazel_dep(name = "rules_spring", version = "2.6.3")
+bazel_dep(name = "rules_jvm_external", version = "6.10")
+bazel_dep(name = "rules_java", version = "8.16.1")
+bazel_dep(name = "rules_proto_grpc_java", version = "5.8.0")
+bazel_dep(name = "protobuf", version = "31.1")
+bazel_dep(name = "rules_oci", version = "2.2.6")
+bazel_dep(name = "rules_pkg", version = "1.1.0")
+bazel_dep(name = "rules_helm", version = "0.22.1")
+bazel_dep(name = "rules_kustomize", version = "0.5.3")
+
+include("//:maven.MODULE.bazel")
+
+oci = use_extension("@rules_oci//oci:extensions.bzl", "oci")
+oci.pull(
+    name = "java-base",
+    digest = "sha256:7d1d666ddafac14da0ded6b4b076becf76cf88b31f9d7953a76555cc82f86511",
+    image = "docker.io/library/eclipse-temurin:21.0.8_9-jdk",
+    platforms = [
+        "linux/arm64/v8",
+        "linux/amd64",
+    ],
+)
+use_repo(
+    oci,
+    "java-base",
+    "java-base_linux_amd64",
+    "java-base_linux_arm64_v8",
+)
+
+kustomize = use_extension("@rules_kustomize//kustomize:extensions.bzl", "kustomize")
+kustomize.download(version = "v5.8.0")
+
+http_file = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
+
+http_file(
+    name = "traefik_chart",
+    downloaded_file_path = "traefik-39.0.6.tgz",
+    integrity = "sha256-SB/dwz9+aCenv10qmzX7/zkl9kVlF1Bskz53wFg5CFM=",
+    url = "https://traefik.github.io/charts/traefik/traefik-39.0.6.tgz",
+)

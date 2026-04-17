@@ -1,0 +1,143 @@
+package com.lexgrip.app.platform.service.user;
+
+
+import com.lexgrip.app.platform.service.cards.CardEntity;
+import com.lexgrip.app.platform.service.decks.DeckEntity;
+import com.lexgrip.app.platform.service.feedback.FeedbackEntity;
+import jakarta.persistence.*;
+
+
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+@Entity
+@Table(
+        name = "users",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uq_users_username", columnNames = "username"),
+                @UniqueConstraint(name = "uq_users_email", columnNames = "email")
+        }
+)
+public class UserEntity {
+
+    @Id
+    @GeneratedValue
+    @Column(name = "id", nullable = false, updatable = false)
+    private UUID id;
+
+    @Column(name = "username", nullable = false, length = 64)
+    private String username;
+
+    @Column(name = "email", nullable = false, length = 320)
+    private String email;
+
+    @Column(name = "name", length = 255)
+    private String name;
+
+    @Column(name = "marketing_consent", nullable = false)
+    private boolean marketingConsent = false;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private OffsetDateTime createdAt;
+
+    @Column(name = "updated_at", nullable = false)
+    private OffsetDateTime updatedAt;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = false)
+    private List<DeckEntity> decks = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = false)
+    private List<CardEntity> cards = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = false)
+    private List<FeedbackEntity> feedbackEntries = new ArrayList<>();
+
+    public UserEntity() {
+    }
+
+    @PrePersist
+    public void prePersist() {
+        OffsetDateTime now = OffsetDateTime.now();
+        this.createdAt = now;
+        this.updatedAt = now;
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = OffsetDateTime.now();
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean isMarketingConsent() {
+        return marketingConsent;
+    }
+
+    public void setMarketingConsent(boolean marketingConsent) {
+        this.marketingConsent = marketingConsent;
+    }
+
+    public OffsetDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public OffsetDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public List<DeckEntity> getDecks() {
+        return decks;
+    }
+
+    public void setDecks(List<DeckEntity> decks) {
+        this.decks = decks;
+    }
+
+    public List<CardEntity> getCards() {
+        return cards;
+    }
+
+    public void setCards(List<CardEntity> cards) {
+        this.cards = cards;
+    }
+
+    public List<FeedbackEntity> getFeedbackEntries() {
+        return feedbackEntries;
+    }
+
+    public void setFeedbackEntries(List<FeedbackEntity> feedbackEntries) {
+        this.feedbackEntries = feedbackEntries;
+    }
+}

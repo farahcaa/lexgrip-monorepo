@@ -1,0 +1,14 @@
+maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
+
+maven.from_toml(
+    name = "maven",
+    libs_versions_toml = "//:gradle/libs.versions.toml",
+)
+
+maven.install(
+    name = "maven",
+    known_contributing_modules = ["bazel_worker_java", "protobuf", "rules_proto_grpc_java"],
+    generate_compat_repositories = True,
+)
+
+use_repo(maven, "maven")

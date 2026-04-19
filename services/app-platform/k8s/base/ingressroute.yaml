@@ -6,7 +6,7 @@ spec:
   entryPoints:
     - web
   routes:
-    - match: Host(`app-platform.localhost`)
+    - match: PathPrefix(`/app`)
       kind: Rule
       services:
           # Must be prefixed with the defined prefix

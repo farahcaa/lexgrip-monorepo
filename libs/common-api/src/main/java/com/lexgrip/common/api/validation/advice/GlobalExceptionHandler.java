@@ -21,6 +21,7 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(BadCredentialsException.class)
   public ResponseEntity<ApiResponse<?>> handleBadCredentials(BadCredentialsException e) {
+    LOGGER.error("Bad credentials: {}", e.getMessage(), e);
     ApiError error = ApiError.unauthorized("Invalid credentials");
     return ResponseEntity.status(error.getStatus()).body(ApiResponse.error(error));
   }

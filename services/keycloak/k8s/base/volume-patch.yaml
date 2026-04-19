@@ -16,6 +16,8 @@ spec:
               readOnly: true
             - name: data
               mountPath: /opt/keycloak/data
+            - name: providers
+              mountPath: /opt/keycloak/providers
       volumes:
         - name: realm
           configMap:
@@ -26,3 +28,5 @@ spec:
         - name: data
           persistentVolumeClaim:
             claimName: pvc
+        - name: providers
+          emptyDir: {}

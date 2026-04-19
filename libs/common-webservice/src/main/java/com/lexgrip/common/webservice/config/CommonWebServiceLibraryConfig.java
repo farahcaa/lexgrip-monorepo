@@ -1,9 +1,9 @@
-package com.vrelte.common.webservice.config;
+package com.lexgrip.common.webservice.config;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ComponentScan(basePackages = "com.farakov.common.webservice")
+@ComponentScan(basePackages = "com.lexgrip.common.webservice")
 public class CommonWebServiceLibraryConfig {
 }

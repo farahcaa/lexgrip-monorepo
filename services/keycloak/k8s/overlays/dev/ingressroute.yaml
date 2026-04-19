@@ -6,7 +6,7 @@ spec:
   entryPoints:
     - web
   routes:
-    - match: Host(`keycloak.localhost`)
+    - match: Host(`keycloak.test`)
       kind: Rule
       services:
         - name: keycloak-service

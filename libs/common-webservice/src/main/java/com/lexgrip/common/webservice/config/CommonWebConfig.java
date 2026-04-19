@@ -1,7 +1,7 @@
-package com.vrelte.common.webservice.config;
+package com.lexgrip.common.webservice.config;
 
 import java.util.List;
-import com.vrelte.common.webservice.resolver.UserArgumentResolver;
+import com.lexgrip.common.webservice.resolver.UserArgumentResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;

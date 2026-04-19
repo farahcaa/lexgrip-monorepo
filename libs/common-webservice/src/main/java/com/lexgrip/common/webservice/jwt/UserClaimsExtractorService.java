@@ -1,4 +1,4 @@
-package com.vrelte.common.webservice.jwt;
+package com.lexgrip.common.webservice.jwt;
 
 import java.util.Map;
 

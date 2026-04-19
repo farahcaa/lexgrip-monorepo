@@ -1,4 +1,4 @@
-package com.vrelte.common.webservice.security;
+package com.lexgrip.common.webservice.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

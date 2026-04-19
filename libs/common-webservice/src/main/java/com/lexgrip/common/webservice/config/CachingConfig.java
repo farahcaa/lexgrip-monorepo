@@ -1,4 +1,4 @@
-package com.vrelte.common.webservice.config;
+package com.lexgrip.common.webservice.config;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import java.util.List;

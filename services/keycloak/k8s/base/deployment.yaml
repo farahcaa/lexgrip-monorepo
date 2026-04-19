@@ -30,6 +30,22 @@ spec:
                 sleep 2
               done
               echo "Postgres is ready!"
+
+        - name: theme-installer
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - |
+               echo "Copying theme JAR to providers..."
+                cp /opt/keycloak/data/theme.jar /providers/theme.jar
+                echo "Done!"
+          volumeMounts:
+          - name: data
+            mountPath: /opt/keycloak/data
+          - name: providers
+            mountPath: /providers
+
       containers:
         - name: keycloak
           image: quay.io/keycloak/keycloak:26.5.6

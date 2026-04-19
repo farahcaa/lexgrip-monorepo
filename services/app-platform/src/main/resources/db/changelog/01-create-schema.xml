@@ -11,9 +11,59 @@
         EXTENSION IF NOT EXISTS "uuid-ossp";</sql>
     </changeSet>
 
+    <changeSet id="create-users-table" author="Chris Farah" >
+        <createTable tableName="users">
+            <column name="id" type="UUID" defaultValueComputed="uuid_generate_v4()">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+
+            <column name="username" type="VARCHAR(64)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="uq_users_username"/>
+            </column>
+
+            <column name="email" type="VARCHAR(320)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="uq_users_email"/>
+            </column>
+
+            <column name="name" type="VARCHAR(255)"/>
+
+            <column name="marketing_consent" type="BOOLEAN" defaultValue="false" >
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="card_limit" type="INTEGER" defaultValueComputed="10">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="cards_used" type="INTEGER" defaultValueComputed="0">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="input_tokens" type="BIGINT" defaultValueComputed="0">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="output_tokens" type="BIGINT" defaultValueComputed="0">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="total_tokens" type="BIGINT" defaultValueComputed="0" >
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="NOW()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="NOW()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
     <changeSet id="create-decks-table" author="Chris Farah">
         <createTable tableName="decks">
-            <column name="id" type="UUID" autoIncrement="true">
+            <column name="id" type="UUID" defaultValueComputed="uuid_generate_v4()">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
 
@@ -38,7 +88,7 @@
 
     <changeSet id="create-cards-table" author="Chris Farah">
         <createTable tableName="cards">
-            <column name="id" type="UUID" autoIncrement="true">
+            <column name="id" type="UUID" defaultValueComputed="uuid_generate_v4()">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
 
@@ -106,40 +156,9 @@
         </createIndex>
     </changeSet>
 
-
-<changeSet id="create-users table" author="Chris Farah" >
-    <createTable tableName="users">
-        <column name="id" type="UUID" defaultValueComputed="uuid_generate_v4()">
-            <constraints primaryKey="true" nullable="false" unique="true"/>
-        </column>
-
-        <column name="username" type="VARCHAR(64)">
-            <constraints nullable="false" unique="true" uniqueConstraintName="uq_users_username"/>
-        </column>
-
-        <column name="email" type="VARCHAR(320)">
-            <constraints nullable="false" unique="true" uniqueConstraintName="uq_users_email"/>
-        </column>
-
-        <column name="name" type="VARCHAR(255)"/>
-
-        <column name="marketing_consent" type="BOOLEAN" defaultValue="false" >
-            <constraints nullable="false"/>
-        </column>
-
-        <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="NOW()">
-            <constraints nullable="false"/>
-        </column>
-
-        <column name="updated_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="NOW()">
-            <constraints nullable="false"/>
-        </column>
-    </createTable>
-</changeSet>
-
     <changeSet id="create-feeback-table" author="Chris Farah" >
     <createTable tableName="feedback">
-        <column name="id" type="UUID">
+        <column name="id" type="UUID" defaultValueComputed="uuid_generate_v4()">
             <constraints primaryKey="true" nullable="false"/>
         </column>
 
@@ -162,4 +181,5 @@
         </column>
     </createTable>
     </changeSet>
+
 </databaseChangeLog>

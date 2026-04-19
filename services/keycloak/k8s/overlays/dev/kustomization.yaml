@@ -16,7 +16,7 @@ configMapGenerator:
       - keycloak.env
   - name: realm
     files:
-      - master-realm.json
+      - lexgrip.json
 
 generatorOptions:
   disableNameSuffixHash: true

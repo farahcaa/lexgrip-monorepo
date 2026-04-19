@@ -49,7 +49,7 @@ java_library(
 
 springboot(
     name = "app-platform-spring",
-    boot_app_class = "com.farakov.vrelte.app.platform.service.VrelteAppPlatformApplication",
+    boot_app_class = "com.lexgrip.app.platform.service.LexgripAppPlatformApplication",
     boot_launcher_class = "org.springframework.boot.loader.launch.JarLauncher",
     java_library = ":app-platform",
 )

@@ -25,11 +25,24 @@ oci.pull(
         "linux/amd64",
     ],
 )
+oci.pull(
+    name = "keycloak-base",
+    image = "quay.io/keycloak/keycloak",
+    tag = "26.5.6",
+    reproducible = False,
+    platforms = [
+        "linux/arm64",
+        "linux/amd64",
+    ],
+)
 use_repo(
     oci,
     "java-base",
     "java-base_linux_amd64",
     "java-base_linux_arm64_v8",
+    "keycloak-base",
+    "keycloak-base_linux_amd64",
+    "keycloak-base_linux_arm64",
 )
 
 kustomize = use_extension("@rules_kustomize//kustomize:extensions.bzl", "kustomize")

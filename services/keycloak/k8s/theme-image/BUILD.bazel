@@ -1,0 +1,53 @@
+load("@rules_oci//oci:defs.bzl", "oci_image", "oci_image_index", "oci_load", "oci_push")
+load("@rules_pkg//:pkg.bzl", "pkg_tar")
+
+package(default_visibility = ["//visibility:public"])
+
+exports_files([
+    "theme.jar",
+])
+
+pkg_tar(
+    name = "theme-provider-layer",
+    srcs = ["theme.jar"],
+    package_dir = "/opt/keycloak/providers",
+)
+
+oci_image(
+    name = "keycloak-theme-image_arm64",
+    base = "@keycloak-base_linux_arm64",
+    tars = [":theme-provider-layer"],
+)
+
+oci_image(
+    name = "keycloak-theme-image_amd64",
+    base = "@keycloak-base_linux_amd64",
+    tars = [":theme-provider-layer"],
+)
+
+oci_image_index(
+    name = "keycloak-theme-image-index",
+    images = [
+        ":keycloak-theme-image_arm64",
+        ":keycloak-theme-image_amd64",
+    ],
+)
+
+oci_load(
+    name = "keycloak-theme-tarball-oci",
+    format = "oci",
+    image = ":keycloak-theme-image-index",
+    repo_tags = ["ghcr.io/farahcaa/lexgrip-monorepo/keycloak:latest"],
+)
+
+filegroup(
+    name = "keycloak-theme-tarball",
+    srcs = [":keycloak-theme-tarball-oci"],
+    output_group = "tarball",
+)
+
+oci_push(
+    name = "keycloak-theme-push",
+    image = ":keycloak-theme-image-index",
+    repository = "ghcr.io/farahcaa/lexgrip-monorepo/keycloak",
+)

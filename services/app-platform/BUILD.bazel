@@ -40,6 +40,7 @@ java_library(
         # Hibernate
         "@maven//:org_hibernate_orm_hibernate_core",
         "@maven//:org_hibernate_validator_hibernate_validator",
+        "@maven//:jakarta_validation_jakarta_validation_api",
 
         # Postgres + Liquibase
         "@maven//:org_postgresql_postgresql",

@@ -199,19 +199,19 @@
                 "view-realm",
                 "manage-events",
                 "query-clients",
-                "query-realms",
                 "manage-clients",
+                "query-realms",
                 "view-identity-providers",
                 "manage-realm",
                 "manage-users",
                 "query-groups",
                 "view-authorization",
-                "view-events",
                 "manage-identity-providers",
+                "view-events",
                 "view-users",
                 "query-users",
-                "impersonation",
-                "create-client"
+                "create-client",
+                "impersonation"
               ]
             }
           },
@@ -300,10 +300,10 @@
           "attributes": {}
         }
       ],
-      "lexgrip-frontend": [],
       "security-admin-console": [],
-      "admin-cli": [],
       "lexgrip-backend": [],
+      "admin-cli": [],
+      "lexgrip-frontend": [],
       "account-console": [],
       "broker": [
         {
@@ -705,10 +705,10 @@
         "oidc.ciba.grant.enabled": "false",
         "client.secret.creation.time": "1740975562",
         "backchannel.logout.session.required": "true",
-        "post.logout.redirect.uris": "+",
         "frontchannel.logout.session.required": "true",
-        "oauth2.device.authorization.grant.enabled": "false",
+        "post.logout.redirect.uris": "+",
         "display.on.consent.screen": "false",
+        "oauth2.device.authorization.grant.enabled": "false",
         "backchannel.logout.revoke.offline.tokens": "false"
       },
       "authenticationFlowBindingOverrides": {},
@@ -737,7 +737,7 @@
       "description": "",
       "rootUrl": "http://localhost:5173",
       "adminUrl": "http://localhost:5173",
-      "baseUrl": "http://localhost:5173/cribs",
+      "baseUrl": "http://localhost:5173/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
@@ -759,9 +759,11 @@
       "frontchannelLogout": true,
       "protocol": "openid-connect",
       "attributes": {
+        "logout.confirmation.enabled": "false",
         "client.introspection.response.allow.jwt.claim.enabled": "false",
-        "post.logout.redirect.uris": "+",
+        "standard.token.exchange.enabled": "false",
         "frontchannel.logout.session.required": "true",
+        "post.logout.redirect.uris": "+",
         "oauth2.device.authorization.grant.enabled": "false",
         "backchannel.logout.revoke.offline.tokens": "false",
         "use.refresh.tokens": "true",
@@ -770,11 +772,12 @@
         "client.use.lightweight.access.token.enabled": "false",
         "backchannel.logout.session.required": "true",
         "client_credentials.use_refresh_token": "false",
-        "tls.client.certificate.bound.access.tokens": "false",
-        "require.pushed.authorization.requests": "false",
         "acr.loa.map": "{}",
+        "require.pushed.authorization.requests": "false",
+        "tls.client.certificate.bound.access.tokens": "false",
         "display.on.consent.screen": "false",
-        "token.response.type.bearer.lower-case": "false"
+        "token.response.type.bearer.lower-case": "false",
+        "dpop.bound.access.tokens": "false"
       },
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": true,
@@ -1654,7 +1657,7 @@
     "strictTransportSecurity": "max-age=31536000; includeSubDomains"
   },
   "smtpServer": {},
-  "loginTheme": "lexgrip-keycloak-frontend",
+  "loginTheme": "campuscribs-keycloak-frontend",
   "accountTheme": "",
   "adminTheme": "",
   "emailTheme": "",
@@ -1725,13 +1728,13 @@
         "config": {
           "allowed-protocol-mapper-types": [
             "saml-role-list-mapper",
-            "oidc-address-mapper",
-            "oidc-usermodel-property-mapper",
-            "oidc-sha256-pairwise-sub-mapper",
-            "oidc-usermodel-attribute-mapper",
             "oidc-full-name-mapper",
-            "saml-user-property-mapper",
-            "saml-user-attribute-mapper"
+            "oidc-sha256-pairwise-sub-mapper",
+            "oidc-usermodel-property-mapper",
+            "oidc-usermodel-attribute-mapper",
+            "saml-user-attribute-mapper",
+            "oidc-address-mapper",
+            "saml-user-property-mapper"
           ]
         }
       },
@@ -1751,14 +1754,14 @@
         "subComponents": {},
         "config": {
           "allowed-protocol-mapper-types": [
+            "oidc-usermodel-attribute-mapper",
             "oidc-full-name-mapper",
-            "saml-role-list-mapper",
             "oidc-sha256-pairwise-sub-mapper",
             "oidc-usermodel-property-mapper",
+            "saml-role-list-mapper",
+            "oidc-address-mapper",
             "saml-user-attribute-mapper",
-            "oidc-usermodel-attribute-mapper",
-            "saml-user-property-mapper",
-            "oidc-address-mapper"
+            "saml-user-property-mapper"
           ]
         }
       },
@@ -1841,7 +1844,6 @@
     ]
   },
   "internationalizationEnabled": false,
-  "supportedLocales": [],
   "authenticationFlows": [
     {
       "id": "b02def6a-a50c-4bc5-b412-312a59b4ff6c",
@@ -2556,6 +2558,15 @@
       "config": {}
     },
     {
+      "alias": "idp_link",
+      "name": "Linking Identity Provider",
+      "providerId": "idp_link",
+      "enabled": true,
+      "defaultAction": false,
+      "priority": 120,
+      "config": {}
+    },
+    {
       "alias": "update_user_locale",
       "name": "Update User Locale",
       "providerId": "update_user_locale",
@@ -2587,7 +2598,7 @@
     "clientSessionMaxLifespan": "0",
     "darkMode": "true"
   },
-  "keycloakVersion": "26.1.2",
+  "keycloakVersion": "26.5.6",
   "userManagedAccessAllowed": false,
   "organizationsEnabled": false,
   "verifiableCredentialsEnabled": false,

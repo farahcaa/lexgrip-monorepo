@@ -17,6 +17,8 @@ spec:
       labels:
         component: app-platform
     spec:
+      imagePullSecrets:
+        - name: registry-pull
       containers:
         - name: app-platform
           image: localhost/farakov-engineering/app-platform:latest

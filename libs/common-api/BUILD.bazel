@@ -8,6 +8,7 @@ java_library(
         "//visibility:public",
     ],
     deps = [
+        "@maven//:com_fasterxml_jackson_core_jackson_databind",
         "@maven//:jakarta_persistence_jakarta_persistence_api",
         "@maven//:jakarta_validation_jakarta_validation_api",
         "@maven//:org_hibernate_orm_hibernate_core",

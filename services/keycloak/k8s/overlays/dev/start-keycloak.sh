@@ -13,5 +13,6 @@ if [ -f /opt/keycloak/data/.realm-imported ]; then
     echo "Realm already imported"
 fi
 
-# Start Keycloak (Development Mode)
-exec /opt/keycloak/bin/kc.sh start "$@" --optimized --verbose
+# Start Keycloak (Development Mode).
+# Avoid --optimized here so provider/theme jars baked into the image are picked up without a separate image-time kc.sh build.
+exec /opt/keycloak/bin/kc.sh start "$@" --verbose

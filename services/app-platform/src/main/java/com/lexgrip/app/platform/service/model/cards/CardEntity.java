@@ -1,6 +1,7 @@
 package com.lexgrip.app.platform.service.model.cards;
 
-import com.lexgrip.app.platform.service.model.decks.DeckEntity;
+import com.lexgrip.app.platform.service.model.categories.CategoryEntity;
+import com.lexgrip.app.platform.service.model.languages.LanguageEntity;
 import com.lexgrip.app.platform.service.model.user.UserEntity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -20,8 +21,12 @@ public class CardEntity {
     private UserEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "deck_id", nullable = false)
-    private DeckEntity deck;
+    @JoinColumn(name = "category_id", nullable = false)
+    private CategoryEntity category;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "language_id", nullable = false)
+    private LanguageEntity language;
 
     @Column(name = "front_text", nullable = false, length = 500)
     private String frontText;
@@ -71,12 +76,20 @@ public class CardEntity {
         this.user = user;
     }
 
-    public DeckEntity getDeck() {
-        return deck;
+    public CategoryEntity getCategory() {
+        return category;
     }
 
-    public void setDeck(DeckEntity deck) {
-        this.deck = deck;
+    public void setCategory(CategoryEntity category) {
+        this.category = category;
+    }
+
+    public LanguageEntity getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(LanguageEntity language) {
+        this.language = language;
     }
 
     public String getFrontText() {

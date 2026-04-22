@@ -66,11 +66,3 @@ bazel run //k8s:apply-all --//build_flags:pipeline=dev
 4) Start services with `bazel run` or deploy to a k8s cluster using the provided overlays. .# lexgrip-monorepo
 # lexgrip-monorepo
 # lexgrip-monorepo
-
-
-## theme changing 
-kubectl apply -f ./services/keycloak/k8s/base/theme-uploader.yaml && \
-kubectl wait --for=condition=Ready pod/theme-uploader --timeout=60s && \
-kubectl cp ./services/keycloak/k8s/base/theme.jar theme-uploader:/data/theme.jar && \
-kubectl exec theme-uploader -- ls -la /data/ && \
-kubectl delete pod theme-uploader

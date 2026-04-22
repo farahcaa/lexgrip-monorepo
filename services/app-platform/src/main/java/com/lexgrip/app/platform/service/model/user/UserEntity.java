@@ -2,8 +2,9 @@ package com.lexgrip.app.platform.service.model.user;
 
 
 import com.lexgrip.app.platform.service.model.cards.CardEntity;
-import com.lexgrip.app.platform.service.model.decks.DeckEntity;
+import com.lexgrip.app.platform.service.model.categories.CategoryEntity;
 import com.lexgrip.app.platform.service.model.feedback.FeedbackEntity;
+import com.lexgrip.app.platform.service.model.languages.LanguageEntity;
 import jakarta.persistence.*;
 import org.springframework.data.domain.Persistable;
 
@@ -21,11 +22,14 @@ import java.util.UUID;
                 @UniqueConstraint(name = "uq_users_email", columnNames = "email")
         }
 )
-public class UserEntity {
+public class UserEntity implements Persistable<UUID> {
 
     @Id
     @Column(name = "id", nullable = false, updatable = false)
     private UUID id;
+
+    @Transient
+    private boolean isNew = true;
 
     @Column(name = "username", nullable = false, length = 64)
     private String username;
@@ -61,7 +65,10 @@ public class UserEntity {
     private OffsetDateTime updatedAt;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = false)
-    private List<DeckEntity> decks = new ArrayList<>();
+    private List<CategoryEntity> categories = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = false)
+    private List<LanguageEntity> languages = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = false)
     private List<CardEntity> cards = new ArrayList<>();
@@ -85,6 +92,7 @@ public class UserEntity {
     }
 
 
+    @Override
     public UUID getId() {
         return id;
     }
@@ -173,12 +181,31 @@ public class UserEntity {
         return updatedAt;
     }
 
-    public List<DeckEntity> getDecks() {
-        return decks;
+    @Override
+    public boolean isNew() {
+        return isNew;
     }
 
-    public void setDecks(List<DeckEntity> decks) {
-        this.decks = decks;
+    @PostPersist
+    @PostLoad
+    public void markNotNew() {
+        this.isNew = false;
+    }
+
+    public List<CategoryEntity> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<CategoryEntity> categories) {
+        this.categories = categories;
+    }
+
+    public List<LanguageEntity> getLanguages() {
+        return languages;
+    }
+
+    public void setLanguages(List<LanguageEntity> languages) {
+        this.languages = languages;
     }
 
     public List<CardEntity> getCards() {

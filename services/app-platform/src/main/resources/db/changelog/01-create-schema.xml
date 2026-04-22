@@ -61,13 +61,66 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="create-decks-table" author="Chris Farah">
-        <createTable tableName="decks">
+    <changeSet author="Chris Farah" id="create-languages-table">
+        <createTable tableName="languages">
             <column name="id" type="UUID" defaultValueComputed="uuid_generate_v4()">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
 
-            <column name="user_id" type="UUID"/>
+            <column name="user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="color" type="VARCHAR(100)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="languages"
+                baseColumnNames="user_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                constraintName="fk_languages_user"/>
+
+        <addUniqueConstraint
+                tableName="languages"
+                columnNames="user_id,name"
+                constraintName="uq_languages_user_name"/>
+
+        <createIndex tableName="languages" indexName="idx_languages_user">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="create-categories-table" author="Chris Farah">
+        <createTable tableName="categories">
+            <column name="id" type="UUID" defaultValueComputed="uuid_generate_v4()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="system" type="boolean" defaultValueBoolean="false" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="UUID">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="language_id" type="UUID">
+                <constraints nullable="true"/>
+            </column>
 
             <column name="name" type="VARCHAR(120)">
                 <constraints nullable="false"/>
@@ -81,9 +134,36 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="color" type="VARCHAR(100))"  />
+            <column name="color" type="VARCHAR(100)"/>
 
         </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="categories"
+                baseColumnNames="user_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                constraintName="fk_categories_user"/>
+
+        <addForeignKeyConstraint
+                baseTableName="categories"
+                baseColumnNames="language_id"
+                referencedTableName="languages"
+                referencedColumnNames="id"
+                constraintName="fk_categories_language"/>
+
+        <addUniqueConstraint
+                tableName="categories"
+                columnNames="language_id,name"
+                constraintName="uq_categories_language_name"/>
+
+        <createIndex tableName="categories" indexName="idx_categories_user">
+            <column name="user_id"/>
+        </createIndex>
+
+        <createIndex tableName="categories" indexName="idx_categories_language">
+            <column name="language_id"/>
+        </createIndex>
     </changeSet>
 
     <changeSet id="create-cards-table" author="Chris Farah">
@@ -96,7 +176,7 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="deck_id" type="UUID">
+            <column name="category_id" type="UUID">
                 <constraints nullable="false"/>
             </column>
 
@@ -132,22 +212,22 @@
 
         <addForeignKeyConstraint
                 baseTableName="cards"
-                baseColumnNames="deck_id"
-                referencedTableName="decks"
+                baseColumnNames="category_id"
+                referencedTableName="categories"
                 referencedColumnNames="id"
-                constraintName="fk_cards_deck"/>
+                constraintName="fk_cards_category"/>
 
         <createIndex tableName="cards" indexName="idx_cards_user">
             <column name="user_id"/>
         </createIndex>
 
-        <createIndex tableName="cards" indexName="idx_cards_deck">
-            <column name="deck_id"/>
+        <createIndex tableName="cards" indexName="idx_cards_category">
+            <column name="category_id"/>
         </createIndex>
 
-        <createIndex tableName="cards" indexName="idx_cards_user_deck">
+        <createIndex tableName="cards" indexName="idx_cards_user_category">
             <column name="user_id"/>
-            <column name="deck_id"/>
+            <column name="category_id"/>
         </createIndex>
 
         <createIndex tableName="cards" indexName="idx_cards_user_sort">
@@ -180,6 +260,117 @@
             <constraints nullable="false" />
         </column>
     </createTable>
+    </changeSet>
+
+    <changeSet id="add-language-to-cards-table" author="Codex">
+        <addColumn tableName="cards">
+            <column name="language_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+
+        <addForeignKeyConstraint
+                baseTableName="cards"
+                baseColumnNames="language_id"
+                referencedTableName="languages"
+                referencedColumnNames="id"
+                constraintName="fk_cards_language"/>
+
+        <createIndex tableName="cards" indexName="idx_cards_language">
+            <column name="language_id"/>
+        </createIndex>
+
+        <createIndex tableName="cards" indexName="idx_cards_user_language">
+            <column name="user_id"/>
+            <column name="language_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="insert-system-categories" author="chris">
+
+        <insert tableName="categories">
+            <column name="id" valueComputed="uuid_generate_v4()"/>
+            <column name="system" valueBoolean="true"/>
+            <column name="name" value="Shopping"/>
+            <column name="color" value="VIOLET"/>
+        </insert>
+
+        <insert tableName="categories">
+            <column name="id" valueComputed="uuid_generate_v4()"/>
+            <column name="system" valueBoolean="true"/>
+            <column name="name" value="Travel"/>
+            <column name="color" value="PURPLE"/>
+        </insert>
+
+        <insert tableName="categories">
+            <column name="id" valueComputed="uuid_generate_v4()"/>
+            <column name="system" valueBoolean="true"/>
+            <column name="name" value="Food"/>
+            <column name="color" value="PINK"/>
+        </insert>
+
+        <insert tableName="categories">
+            <column name="id" valueComputed="uuid_generate_v4()"/>
+            <column name="system" valueBoolean="true"/>
+            <column name="name" value="Work"/>
+            <column name="color" value="ROSE"/>
+        </insert>
+
+        <insert tableName="categories">
+            <column name="id" valueComputed="uuid_generate_v4()"/>
+            <column name="system" valueBoolean="true"/>
+            <column name="name" value="Health"/>
+            <column name="color" value="RED"/>
+        </insert>
+
+        <insert tableName="categories">
+            <column name="id" valueComputed="uuid_generate_v4()"/>
+            <column name="system" valueBoolean="true"/>
+            <column name="name" value="Social"/>
+            <column name="color" value="ORANGE"/>
+        </insert>
+
+        <insert tableName="categories">
+            <column name="id" valueComputed="uuid_generate_v4()"/>
+            <column name="system" valueBoolean="true"/>
+            <column name="name" value="Home"/>
+            <column name="color" value="AMBER"/>
+        </insert>
+
+        <insert tableName="categories">
+            <column name="id" valueComputed="uuid_generate_v4()"/>
+            <column name="system" valueBoolean="true"/>
+            <column name="name" value="Transport"/>
+            <column name="color" value="BLUE"/>
+        </insert>
+
+        <insert tableName="categories">
+            <column name="id" valueComputed="uuid_generate_v4()"/>
+            <column name="system" valueBoolean="true"/>
+            <column name="name" value="Emergency"/>
+            <column name="color" value="YELLOW"/>
+        </insert>
+
+        <insert tableName="categories">
+            <column name="id" valueComputed="uuid_generate_v4()"/>
+            <column name="system" valueBoolean="true"/>
+            <column name="name" value="Nature"/>
+            <column name="color" value="TEAL"/>
+        </insert>
+
+        <insert tableName="categories">
+            <column name="id" valueComputed="uuid_generate_v4()"/>
+            <column name="system" valueBoolean="true"/>
+            <column name="name" value="Education"/>
+            <column name="color" value="GRAY"/>
+        </insert>
+
+        <insert tableName="categories">
+            <column name="id" valueComputed="uuid_generate_v4()"/>
+            <column name="system" valueBoolean="true"/>
+            <column name="name" value="Technology"/>
+            <column name="color" value="SLATE"/>
+        </insert>
+
     </changeSet>
 
 </databaseChangeLog>

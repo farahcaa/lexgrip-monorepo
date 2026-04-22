@@ -76,3 +76,6 @@ eclipse-*bin/
 /.sass-cache
 # User-specific .bazelrc
 user.bazelrc
+/**/registry-pull-secret.yaml
+/**/ghcr-pull-secret.yaml
+/scripts/dev.ghcr.env

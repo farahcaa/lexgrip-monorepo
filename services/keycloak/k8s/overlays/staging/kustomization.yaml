@@ -6,6 +6,7 @@ resources:
   - ingressroute.yaml
   - admin-secret.yaml
   - db-secret.yaml
+  - ghcr-pull-secret.yaml
 
 configMapGenerator:
   - name: scripts

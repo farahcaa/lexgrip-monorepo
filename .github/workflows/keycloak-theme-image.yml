@@ -1,0 +1,42 @@
+name: Build and Push Keycloak Theme Image
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "services/keycloak/k8s/theme-image/**"
+      - ".github/workflows/keycloak-theme-image.yml"
+  workflow_dispatch:
+
+env:
+  IMAGE_TAG: 26.5.6
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Bazelisk
+        uses: bazelbuild/setup-bazelisk@v3
+
+      - name: Configure GHCR auth for rules_oci
+        env:
+          GHCR_USER: ${{ github.actor }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p "$HOME/.docker"
+          AUTH="$(printf "%s:%s" "$GHCR_USER" "$GHCR_TOKEN" | base64 -w 0)"
+          cat > "$HOME/.docker/config.json" <<EOF
+          {"auths":{"ghcr.io":{"auth":"$AUTH"}}}
+          EOF
+
+      - name: Build and push OCI image via Bazel
+        run: |
+          bazel run //services/keycloak/k8s/theme-image:keycloak-theme-push -- --tag="${IMAGE_TAG}"
+          bazel run //services/keycloak/k8s/theme-image:keycloak-theme-push -- --tag=latest

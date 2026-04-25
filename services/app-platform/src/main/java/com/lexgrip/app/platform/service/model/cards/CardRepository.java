@@ -6,7 +6,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.UUID;
+import java.util.List;
 
 public interface CardRepository extends JpaRepository<CardEntity, UUID> {
     Page<CardEntity> findAllByLanguageIdAndUser(UUID languageId, UserEntity user, Pageable pageable);
+    List<CardEntity> findAllByLanguageIdAndUserAndCategoryId(UUID languageId, UserEntity user, UUID categoryId);
 }

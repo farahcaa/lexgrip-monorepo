@@ -25,7 +25,7 @@
                 <constraints nullable="false" unique="true" uniqueConstraintName="uq_users_email"/>
             </column>
 
-            <column name="name" type="VARCHAR(255)"/>
+            <column name="full_name" type="VARCHAR(255)"/>
 
             <column name="marketing_consent" type="BOOLEAN" defaultValue="false" >
                 <constraints nullable="false"/>
@@ -177,7 +177,7 @@
             </column>
 
             <column name="category_id" type="UUID">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
 
             <column name="front_text" type="VARCHAR(500)">

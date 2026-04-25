@@ -50,4 +50,5 @@ oci_push(
     name = "keycloak-theme-push",
     image = ":keycloak-theme-image-index",
     repository = "ghcr.io/farahcaa/lexgrip-monorepo/keycloak",
+    remote_tags = ["latest", "$(GIT_SHA)"]
 )

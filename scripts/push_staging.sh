@@ -17,7 +17,7 @@ for service in app-platform; do
     # Use kustomize edit to set the image tag
     cd $overlay_path
     kustomize edit set image \
-        localhost/farakov-engineering/$service=ghcr.io/farakov-engineering/vrelte/$service:$IMAGE_TAG
+        localhost/farahcaa/lexgrip-monorepo/$service=ghcr.io/farahcaa/lexgrip-monorepo/$service:$IMAGE_TAG
     cd -
 done
 

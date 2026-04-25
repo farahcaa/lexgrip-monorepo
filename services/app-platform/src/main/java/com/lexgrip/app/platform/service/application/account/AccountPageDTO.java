@@ -4,16 +4,16 @@ import java.math.BigInteger;
 
 public class AccountPageDTO {
 
-    private String name;
+    private String fullName;
     private String email;
     private int cardsLeft;
 
-    public String getName(){
-        return name;
+    public String getFullName(){
+        return fullName;
     }
 
-    public AccountPageDTO setName(String name) {
-        this.name = name;
+    public AccountPageDTO setFullName(String fullName) {
+        this.fullName = fullName;
         return this;
     }
 

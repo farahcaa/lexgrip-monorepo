@@ -37,8 +37,8 @@ public class UserEntity implements Persistable<UUID> {
     @Column(name = "email", nullable = false, length = 320)
     private String email;
 
-    @Column(name = "name", length = 255)
-    private String name;
+    @Column(name = "full_name", length = 255)
+    private String fullName;
 
     @Column(name = "marketing_consent", nullable = false)
     private boolean marketingConsent = false;
@@ -117,12 +117,12 @@ public class UserEntity implements Persistable<UUID> {
         this.email = email;
     }
 
-    public String getName() {
-        return name;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public boolean isMarketingConsent() {

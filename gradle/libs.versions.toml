@@ -23,6 +23,9 @@ spring-grpc = "0.12.0"
 spring-statemachine = "4.0.1"
 spring-framework = "6.1.14"
 
+# lang Chain
+langchain = "1.10.0"
+
 [libraries]
 # -------------------------------------------------------------------------
 # Utilities, Networking, and Core Infrastructure
@@ -106,3 +109,9 @@ spring-test = { module = "org.springframework:spring-test", version.ref = "sprin
 spring-tx = { module = "org.springframework:spring-tx", version.ref = "spring-framework" }
 spring-web = { module = "org.springframework:spring-web", version.ref = "spring-framework" }
 spring-webmvc = { module = "org.springframework:spring-webmvc", version.ref = "spring-framework" }
+
+# -------------------------------------------------------------------------
+# LangChain4J
+# -------------------------------------------------------------------------
+langchain4j_open_ai = { module = "dev.langchain4j:langchain4j-open-ai", version.ref = "langchain" }
+langchain4j = { module = "dev.langchain4j:langchain4j", version.ref = "langchain" }

@@ -1,7 +1,5 @@
 package com.lexgrip.common.webservice.jwt;
 
-import java.util.Map;
-
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +15,7 @@ public class UserClaimsExtractorService {
 
   private static final String PREFERRED_USERNAME_CLAIM = "preferred_username";
   private static final String EMAIL_CLAIM = "email";
+  private static final String NAME_CLAIM = "fullName";
 
   /**
    * Extract user claims from a JWT
@@ -25,15 +24,15 @@ public class UserClaimsExtractorService {
    * @return the user claims
    */
   public UserClaims extractClaims(Jwt jwt) {
-    Map<String, Object> claims = jwt.getClaims();
-
-    String preferredUsername = (String) claims.get(PREFERRED_USERNAME_CLAIM);
-    String email = (String) claims.get(EMAIL_CLAIM);
+    String preferredUsername = jwt.getClaimAsString(PREFERRED_USERNAME_CLAIM);
+    String email = jwt.getClaimAsString(EMAIL_CLAIM);
+    String fullName = jwt.getClaimAsString(NAME_CLAIM);
 
     UserClaims userClaims = new UserClaims();
 
     userClaims.setPreferredUsername(preferredUsername);
     userClaims.setEmail(email);
+    userClaims.setFullName(fullName);
 
     return userClaims;
   }

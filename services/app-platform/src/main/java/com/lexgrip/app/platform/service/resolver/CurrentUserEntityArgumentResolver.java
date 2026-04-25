@@ -102,20 +102,32 @@ public class CurrentUserEntityArgumentResolver implements HandlerMethodArgumentR
         UUID userId = currentUser.getId();
         String email = currentUser.getClaims().getEmail().orElse(null);
         String preferredUsername = currentUser.getClaims().getPreferredUsername().orElse(null);
-        LOGGER.info("Resolving app user for userId='{}', email='{}', preferredUsername='{}'",
-                userId, email, preferredUsername);
+        String name = currentUser.getClaims().getFullName().orElse(null);
+        LOGGER.info("Resolving app user for userId='{}', email='{}', preferredUsername='{}', name='{}'",
+                userId, email, preferredUsername, name);
 
         Optional<UserEntity> existingUser = findExistingUser(userId, email, preferredUsername);
         if (existingUser.isPresent()) {
-            LOGGER.info("Found existing app user id='{}'", existingUser.get().getId());
-            return existingUser.get();
+            UserEntity userEntity = existingUser.get();
+            String resolvedName = buildName(name, preferredUsername);
+            if (resolvedName != null && !resolvedName.equals(userEntity.getFullName())) {
+                userEntity.setFullName(resolvedName);
+                try {
+                    userEntity = userRepository.save(userEntity);
+                    LOGGER.info("Updated app user name for id='{}'", userEntity.getId());
+                } catch (RuntimeException e) {
+                    LOGGER.warn("Failed to update app user name for id='{}'", userEntity.getId(), e);
+                }
+            }
+            LOGGER.info("Found existing app user id='{}'", userEntity.getId());
+            return userEntity;
         }
 
         UserEntity userEntity = new UserEntity();
         userEntity.setId(userId);
         userEntity.setUsername(buildUsername(preferredUsername, userId));
         userEntity.setEmail(buildEmail(email, userId));
-        userEntity.setName(preferredUsername);
+        userEntity.setFullName(buildName(name, preferredUsername));
 
         try {
             LOGGER.info("Creating new app user with id='{}', username='{}', email='{}'",
@@ -170,5 +182,15 @@ public class CurrentUserEntityArgumentResolver implements HandlerMethodArgumentR
             return email;
         }
         return userId + "@local.invalid";
+    }
+
+    private String buildName(String name, String preferredUsername) {
+        if (name != null && !name.isBlank()) {
+            return name;
+        }
+        if (preferredUsername != null && !preferredUsername.isBlank() && !preferredUsername.contains("@")) {
+            return preferredUsername;
+        }
+        return null;
     }
 }

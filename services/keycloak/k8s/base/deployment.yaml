@@ -35,7 +35,7 @@ spec:
 
       containers:
         - name: keycloak
-          image: ghcr.io/farahcaa/lexgrip-monorepo/keycloak:26.5.6
+          image: ghcr.io/farahcaa/lexgrip-monorepo/keycloak:latest
           imagePullPolicy: IfNotPresent
           command: [ "/bin/bash", "/scripts/start-keycloak.sh" ]
           ports:

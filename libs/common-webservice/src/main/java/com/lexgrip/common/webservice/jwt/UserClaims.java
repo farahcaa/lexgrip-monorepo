@@ -19,6 +19,12 @@ public class UserClaims {
   private String email;
 
   /**
+   * The user's display name
+   */
+  @Nullable
+  private String fullName;
+
+  /**
    * Default constructor
    */
   public UserClaims() {
@@ -30,9 +36,10 @@ public class UserClaims {
    * @param preferredUsername preferred username
    * @param email             email
    */
-  public UserClaims(@NotNull String preferredUsername, @NotNull String email) {
+  public UserClaims(@NotNull String preferredUsername, @NotNull String email, @Nullable String fullName) {
     this.preferredUsername = preferredUsername;
     this.email = email;
+    this.fullName = fullName;
   }
 
   public Optional<String> getPreferredUsername() {
@@ -50,6 +57,15 @@ public class UserClaims {
 
   public UserClaims setEmail(@Nullable String email) {
     this.email = email;
+    return this;
+  }
+
+  public Optional<String> getFullName() {
+    return Optional.ofNullable(fullName);
+  }
+
+  public UserClaims setFullName(@Nullable String fullName) {
+    this.fullName = fullName;
     return this;
   }
 }

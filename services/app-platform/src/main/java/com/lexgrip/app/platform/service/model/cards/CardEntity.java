@@ -21,7 +21,7 @@ public class CardEntity {
     private UserEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "category_id", nullable = true)
     private CategoryEntity category;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

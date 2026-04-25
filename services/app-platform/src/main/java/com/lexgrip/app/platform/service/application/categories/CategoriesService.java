@@ -6,9 +6,9 @@ import com.lexgrip.app.platform.service.model.categories.CategoryMapper;
 import com.lexgrip.app.platform.service.model.categories.CategoryRepository;
 import com.lexgrip.app.platform.service.model.user.UserEntity;
 import com.lexgrip.common.api.model.ApiResponse;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -24,6 +24,11 @@ public class CategoriesService {
     }
     public ApiResponse<List<CategoriesDTO>> getCategories(UserEntity user) {
         List<CategoryEntity> categoryEntityList = categoryRepository.findByUserOrIsSystemTrue(user);
+        categoryEntityList.sort(
+                Comparator
+                        .comparing((CategoryEntity category) -> category.getUser() == null || !user.getId().equals(category.getUser().getId()))
+                        .thenComparing(CategoryEntity::getName, String.CASE_INSENSITIVE_ORDER)
+        );
         return new ApiResponse<>(true,categoryMapper.toCategoriesDTO(categoryEntityList), null);
     }
 }

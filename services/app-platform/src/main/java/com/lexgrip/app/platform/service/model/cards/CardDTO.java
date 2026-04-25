@@ -1,8 +1,6 @@
 package com.lexgrip.app.platform.service.model.cards;
 
-import com.lexgrip.app.platform.service.model.categories.CategoryEntity;
-import com.lexgrip.app.platform.service.model.languages.LanguageEntity;
-import com.lexgrip.app.platform.service.model.user.UserEntity;
+import com.lexgrip.app.platform.service.model.categories.CategoriesDTO;
 
 
 import java.util.UUID;
@@ -11,7 +9,7 @@ public class CardDTO {
 
     private UUID id;
 
-    private CategoryEntity category;
+    private CategoriesDTO category;
 
     private String frontText;
 
@@ -24,7 +22,7 @@ public class CardDTO {
         return id;
     }
 
-    public CategoryEntity getCategory() {
+    public CategoriesDTO getCategory() {
         return category;
     }
 
@@ -46,7 +44,7 @@ public class CardDTO {
         return this;
     }
 
-    public CardDTO setCategory(CategoryEntity category) {
+    public CardDTO setCategory(CategoriesDTO category) {
         this.category = category;
         return this;
     }

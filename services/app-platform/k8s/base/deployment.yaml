@@ -21,7 +21,7 @@ spec:
         - name: registry-pull
       containers:
         - name: app-platform
-          image: localhost/farakov-engineering/app-platform:latest
+          image: localhost/farahcaa/lexgrip-monorepo/app-platform:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080

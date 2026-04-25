@@ -1,9 +1,13 @@
 package com.lexgrip.app.platform.service.model.categories;
 
-public class CategoriesDTO {
+import com.lexgrip.app.platform.service.model.common.Colors;
 
+import java.util.UUID;
+
+public class CategoriesDTO {
+    private UUID id;
     private String name;
-    private String color;
+    private Colors color;
 
     public String getName(){
         return name;
@@ -14,12 +18,23 @@ public class CategoriesDTO {
         return this;
     }
 
-    public String getColor(){
+    public UUID getId(){
+        return id;
+    }
+
+    public CategoriesDTO setId(UUID id){
+        this.id = id;
+        return this;
+    }
+
+    public Colors getColor(){
         return color;
     }
 
-    public CategoriesDTO setColor(String color){
+    public CategoriesDTO setColor(Colors color){
         this.color = color;
         return this;
     }
+
+
 }

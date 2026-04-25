@@ -74,24 +74,27 @@ public class CategoryEntity {
         return user;
     }
 
-    public void setUser(UserEntity user) {
+    public CategoryEntity setUser(UserEntity user) {
         this.user = user;
+        return this;
     }
 
     public LanguageEntity getLanguage() {
         return language;
     }
 
-    public void setLanguage(LanguageEntity language) {
+    public CategoryEntity setLanguage(LanguageEntity language) {
         this.language = language;
+        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public CategoryEntity setName(String name) {
         this.name = name;
+        return this;
     }
 
     public Colors getColor() {
@@ -124,7 +127,8 @@ public class CategoryEntity {
         return cards;
     }
 
-    public void setCards(List<CardEntity> cards) {
+    public CategoryEntity setCards(List<CardEntity> cards) {
         this.cards = cards;
+        return this;
     }
 }

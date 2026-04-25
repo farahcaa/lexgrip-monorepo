@@ -35,6 +35,7 @@ java_library(
         "@maven//:jakarta_persistence_jakarta_persistence_api",
         "@maven//:org_springframework_boot_spring_boot_starter_data_jpa",
         "@maven//:org_springframework_data_spring_data_jpa",
+        "@maven//:org_springframework_spring_tx",
         "@maven//:org_springframework_data_spring_data_commons",
 
         # Hibernate
@@ -45,6 +46,11 @@ java_library(
         # Postgres + Liquibase
         "@maven//:org_postgresql_postgresql",
         "@maven//:org_liquibase_liquibase_core",
+
+        # AI
+         "@maven//:dev_langchain4j_langchain4j",
+         "@maven//:dev_langchain4j_langchain4j_open_ai",
+"@maven//:dev_langchain4j_langchain4j_core"
     ],
 )
 
@@ -98,7 +104,7 @@ oci_load(
     name = "app-platform-tarball-oci",
     format = "oci",
     image = ":app-platform-image",
-    repo_tags = ["farakov-engineering/app-platform:latest"],
+    repo_tags = ["farahcaa/lexgrip-monorepo/app-platform:latest"],
 )
 
 filegroup(
@@ -111,7 +117,7 @@ filegroup(
 oci_push(
     name = "app-platform-push",
     image = ":app-platform-image",
-    repository = "ghcr.io/farakov-engineering/vrelte/app-platform",
+    repository = "ghcr.io/farahcaa/lexgrip-monorepo/app-platform",
 )
 
 ## DEFINE K8S PIPELINE MANIFESTS

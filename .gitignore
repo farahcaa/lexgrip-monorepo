@@ -79,3 +79,4 @@ user.bazelrc
 /**/registry-pull-secret.yaml
 /**/ghcr-pull-secret.yaml
 /scripts/dev.ghcr.env
+/bazel_config/credentials/docker

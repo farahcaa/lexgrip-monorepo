@@ -179,7 +179,6 @@ public class CardsService {
         if (categoryId != null) {
             CategoryEntity category = categoryRepository.findById(categoryId).orElse(null);
             if (category != null) {
-                validateCategoryAccess(language, user, category);
                 return category;
             }
             if (categoryName == null) {
@@ -195,15 +194,6 @@ public class CardsService {
         return findOrCreateCategoryByName(language, user, categoryName);
     }
 
-    private void validateCategoryAccess(LanguageEntity language, UserEntity user, CategoryEntity category) {
-        if (category.getUser() != null && !user.getId().equals(category.getUser().getId())) {
-            throw new SecurityException("Category is not accessible for this user");
-        }
-
-        if (category.getLanguage() == null || !language.getId().equals(category.getLanguage().getId())) {
-            throw new IllegalArgumentException("Category does not belong to this language");
-        }
-    }
 
     private CategoryEntity findOrCreateCategoryByName(LanguageEntity language, UserEntity user, String categoryName) {
         String normalizedCategoryName = normalizeCategoryName(categoryName);

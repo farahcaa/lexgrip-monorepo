@@ -5,7 +5,6 @@ import com.lexgrip.app.platform.service.model.dto.PagedResponse;
 import com.lexgrip.app.platform.service.model.user.UserEntity;
 import com.lexgrip.app.platform.service.resolver.CurrentUserEntity;
 import com.lexgrip.common.api.model.ApiResponse;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +21,7 @@ public class CardsController {
     }
 
     @GetMapping("/language/{id}/cards")
-    public ApiResponse<PagedResponse<CardDTO>> getCards(
+    public PagedResponse<CardDTO> getCards(
             @PathVariable UUID id,
             Pageable pageable,
             @CurrentUserEntity UserEntity user

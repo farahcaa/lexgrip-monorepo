@@ -24,6 +24,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -63,12 +65,12 @@ public class CardsService {
         this.userRepository = userRepository;
     }
 
-    public ApiResponse<PagedResponse<CardDTO>> getCards(UUID id, Pageable pageable, UserEntity user) {
+    public PagedResponse<CardDTO> getCards(UUID id, Pageable pageable, UserEntity user) {
         Page<CardDTO> cardsPage = cardRepository
                 .findAllByLanguageIdAndUser(id, user, pageable)
                 .map(cardMapper::toCardDTO);
 
-        return ApiResponse.success(PagedResponse.from(cardsPage));
+        return PagedResponse.from(cardsPage);
     }
 
     public ApiResponse<String> createCard(UUID languageId, UserEntity user, CardDTO cardDTO) {
@@ -250,11 +252,14 @@ public class CardsService {
             return ApiResponse.error(new ApiError("404", "Language not found", HttpStatus.NOT_FOUND));
         }
 
+        if(user.getFirstGenerateRequestAt() == null){
+            user.setFirstGenerateRequestAt(OffsetDateTime.now());
+        }
+
         int remainingCards = getRemainingCards(user);
         if (remainingCards <= 0) {
             return ApiResponse.error(new ApiError("403", "Card generation limit reached", HttpStatus.FORBIDDEN));
         }
-
         int maxCardsToGenerate = Math.min(MAX_GENERATED_CARDS_PER_REQUEST, remainingCards);
         CategoryEntity requestedCategory = categoryRepository
                 .findByLanguageAndNameIgnoreCase(language, sanitizedUserMessage)
@@ -391,26 +396,46 @@ public class CardsService {
         if (userInputMatchedCategory && !wordsToAvoid.isEmpty()) {
             avoidanceSection = """
 
-                    The user's request matches an existing category.
-                    Avoid reusing these existing words from that category:
-                    %s
-                    """.formatted(String.join(", ", wordsToAvoid));
+                Do not use any of these frontText words:
+                %s
+                """.formatted(String.join(", ", wordsToAvoid));
         }
 
         return """
-                Language: %s
-                User request: %s
+            Target language for frontText and exampleText: %s
+            Explanation language for backText: English
+            Category name language: English
 
-                The user request can be either:
-                - a category name, or
-                - a description of what flashcards they want.
+            User request: %s
 
-                Generate up to %d cards.
-                Include categoryName on every card.
-                Use the same categoryName for all returned cards in this response.
-                If you cannot generate %d good cards, return fewer cards and stop.
-                %s
-                """.formatted(languageName, userMessage, maxCardsToGenerate, maxCardsToGenerate, avoidanceSection);
+            Interpret the user request as either:
+            - an English category name, or
+            - a description of the desired flashcards.
+
+            Generate up to %d cards.
+
+            Strict rules:
+            - frontText must be exactly one single word in %s.
+            - frontText must not be a phrase.
+            - backText must be a short English definition or translation.
+            - exampleText must be a sentence in %s.
+            - exampleText must contain the exact frontText word.
+            - categoryName must be English.
+            - categoryName must be the same on every card.
+            - Do not mix languages in frontText.
+            - Do not translate categoryName into %s.
+            - If you cannot generate %d good cards, return fewer cards.
+            %s
+            """.formatted(
+                languageName,
+                userMessage,
+                maxCardsToGenerate,
+                languageName,
+                languageName,
+                languageName,
+                maxCardsToGenerate,
+                avoidanceSection
+        );
     }
 
     private String resolveGeneratedCategoryName(GeneratedCardResponse generated, String userMessage) {
@@ -467,8 +492,6 @@ public class CardsService {
         Set<String> words = new LinkedHashSet<>();
         for (CardEntity card : existingCards) {
             addWords(words, card.getFrontText());
-            addWords(words, card.getBackText());
-            addWords(words, card.getExampleText());
             if (words.size() >= MAX_AVOID_WORDS) {
                 break;
             }

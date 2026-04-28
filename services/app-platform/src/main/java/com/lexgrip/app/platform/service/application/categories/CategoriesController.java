@@ -5,10 +5,12 @@ import com.lexgrip.app.platform.service.model.user.UserEntity;
 import com.lexgrip.app.platform.service.resolver.CurrentUserEntity;
 import com.lexgrip.common.api.model.ApiResponse;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("app/categories")
@@ -20,8 +22,8 @@ public class CategoriesController {
         this.categoriesService = categoriesService;
     }
 
-    @GetMapping()
-    public ApiResponse<List<CategoriesDTO>> getCategories(@CurrentUserEntity UserEntity user){
-        return categoriesService.getCategories(user);
+    @GetMapping("/{languageId}")
+    public ApiResponse<List<CategoriesDTO>> getCategories(@PathVariable UUID languageId, @CurrentUserEntity UserEntity user){
+        return categoriesService.getCategoriesByLanguage(user, languageId);
     }
 }

@@ -9,6 +9,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface CategoryRepository extends JpaRepository<CategoryEntity, UUID> {
-    List<CategoryEntity> findByUserOrIsSystemTrue(UserEntity user);
+    List<CategoryEntity> findByUserAndLanguageIdOrIsSystemTrue(UserEntity user, UUID languageId);
     Optional<CategoryEntity> findByLanguageAndNameIgnoreCase(LanguageEntity language, String name);
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class CategoriesService {
@@ -22,8 +23,9 @@ public class CategoriesService {
         this.categoryRepository = categoryRepository;
         this.categoryMapper = categoryMapper;
     }
-    public ApiResponse<List<CategoriesDTO>> getCategories(UserEntity user) {
-        List<CategoryEntity> categoryEntityList = categoryRepository.findByUserOrIsSystemTrue(user);
+    public ApiResponse<List<CategoriesDTO>> getCategoriesByLanguage(UserEntity user, UUID languageId
+    ) {
+        List<CategoryEntity> categoryEntityList = categoryRepository.findByUserAndLanguageIdOrIsSystemTrue(user,languageId);
         categoryEntityList.sort(
                 Comparator
                         .comparing((CategoryEntity category) -> category.getUser() == null || !user.getId().equals(category.getUser().getId()))

@@ -37,7 +37,7 @@ oci_load(
     name = "keycloak-theme-tarball-oci",
     format = "oci",
     image = ":keycloak-theme-image-index",
-    repo_tags = ["ghcr.io/farahcaa/lexgrip-monorepo/keycloak:latest"],
+    repo_tags = ["ghcr.io/farakov-engineering/lexgrip-monorepo/keycloak:latest"],
 )
 
 filegroup(
@@ -49,6 +49,6 @@ filegroup(
 oci_push(
     name = "keycloak-theme-push",
     image = ":keycloak-theme-image-index",
-    repository = "ghcr.io/farahcaa/lexgrip-monorepo/keycloak",
-    remote_tags = ["latest", "$(GIT_SHA)"]
+    repository = "ghcr.io/farakov-engineering/lexgrip-monorepo/keycloak",
+    remote_tags = ["latest"]
 )

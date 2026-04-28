@@ -58,6 +58,9 @@ public class UserEntity implements Persistable<UUID> {
     @Column(name = "total_tokens", nullable = false)
     private Long totalTokens = 0L;
 
+    @Column(name = "first_generate_request_at", nullable = true)
+    private OffsetDateTime firstGenerateRequestAt;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private OffsetDateTime createdAt;
 
@@ -91,6 +94,14 @@ public class UserEntity implements Persistable<UUID> {
         this.updatedAt = OffsetDateTime.now();
     }
 
+    public UserEntity setFirstGenerateRequestAt(OffsetDateTime firstGenerateRequestAt){
+        this.firstGenerateRequestAt = firstGenerateRequestAt;
+        return this;
+    }
+
+    public OffsetDateTime getFirstGenerateRequestAt(){
+        return firstGenerateRequestAt;
+    }
 
     @Override
     public UUID getId() {
